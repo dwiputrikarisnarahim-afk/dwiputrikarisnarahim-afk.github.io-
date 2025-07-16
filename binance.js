@@ -1,20 +1,16 @@
-<script>
-  const symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"];
-
-  async function getMultiplePrices() {
-    let html = "";
-    for (let symbol of symbols) {
-      const endpoint = `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`;
-      try {
-        const response = await fetch(endpoint);
-        const data = await response.json();
-        html += `<p>${symbol}: $${parseFloat(data.price).toFixed(2)}</p>`;
-      } catch (error) {
-        html += `<p>${symbol}: Error mengambil data</p>`;
-      }
+async function getBinancePrice(symbol = "BTCUSDT") {
+  const endpoint = `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`;
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    const priceElement = document.getElementById("price");
+    if (priceElement) {
+      priceElement.innerText = `Harga ${symbol}: $${parseFloat(data.price).toFixed(2)}`;
     }
-    document.getElementById("prices").innerHTML = html;
+  } catch (error) {
+    console.error("Gagal mengambil data harga:", error);
   }
+}
 
-  window.onload = () => getMultiplePrices();
-</script>
+// Jalankan saat halaman dimuat
+window.onload = () => getBinancePrice();
